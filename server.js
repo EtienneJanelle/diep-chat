@@ -51,7 +51,7 @@ io.on('connection', socket => {
     console.log("room left", room, name)
   })
   socket.on('send-chat-message', (room, message) => {
-    if (typeof room != "string" || typeof name != "string") return
+    if (typeof room != "string" || typeof message != "string") return
     if (rooms[room] == undefined) return
     if (rooms[room].users[socket.id] == undefined) return
     socket.to(room).broadcast.emit('chat-message', { message: message, name: rooms[room].users[socket.id]})

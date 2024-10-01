@@ -32,8 +32,11 @@ console.log(rooms)
 
 io.on('connection', socket => {
   socket.on('new-user', (room, name) => {
+    console.log("new-user"), (room, name)
     if (typeof room != "string" || typeof name != "string") return
+    console.log(1)
     if (rooms[room] == undefined) return
+    console.log(2)
     socket.join(room)
     rooms[room].users[socket.id] = name
     socket.to(room).broadcast.emit('user-connected', name)

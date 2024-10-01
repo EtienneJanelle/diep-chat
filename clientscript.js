@@ -25,7 +25,7 @@ function initChat() {
   console.log("initialising diep chat")
 
   const messageDuration = 10
-  const chatSocket = io('http://localhost:3000')
+  const chatSocket = io('https://diep-chat.onrender.com/')
 
   const style = `
   #chat {

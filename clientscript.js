@@ -7,9 +7,19 @@
 // @match        https://*diep.io/*
 // @grant        none
 // @run-at       document-idle
-// @require https://unpkg.com/socket.io@4.7.5/client-dist/socket.io.js
-
+// @require https://raw.githubusercontent.com/CleverYeti/diepChat/refs/heads/main/socket.io.js
 // ==/UserScript==
+setTimeout(()=>{
+  function addScript(src) {
+    var s = document.createElement("script");
+    s.setAttribute("src", src);
+    document.body.appendChild(s);
+  }
+  addScript("https://raw.githubusercontent.com/CleverYeti/diepChat/refs/heads/main/socket.io.js")
+},2000)
+
+
+
 setTimeout(initChat, 5000)
 function initChat() {
   console.log("initialising diep chat")
@@ -19,7 +29,8 @@ function initChat() {
 
   const style = `
   #chat {
-    --ui-scale: max(calc(var(--scale-height) / 1920.0), calc(var(--scale-width) / 1080));
+    --ui-scale: calc((var(--scale-height) + var(--scale-width)) / 3000);
+    --ui-scale: max(calc(100vh / 1080 * 1.5), calc(100vw / 1920) * 1.5);
     font-size: calc(16 * var(--ui-scale));
     position: fixed;
     bottom: calc(200 * var(--ui-scale));
@@ -30,9 +41,13 @@ function initChat() {
     display: flex;
     flex-direction: column;
     z-index: 1000;
+  }
+
+  body:has(#in-game-screen.active) #chat {
     pointer-events: none;
     touch-events: none;
   }
+
   #chat > .input {
     display: block;
     width: auto;
@@ -43,6 +58,7 @@ function initChat() {
     background: var(--uicolor-3);
     box-shadow: inset 0 0 0 calc(2 * var(--ui-scale)) rgba(0,0,0,0.25);
     color: white;
+    font-size: calc(16 * var(--ui-scale));
   }
   #chat > .input:focus {
     background: #333333;
@@ -53,7 +69,7 @@ function initChat() {
     display: grid;
     grid-template-columns: auto 1fr;
     color: white;
-    gap: 10px;
+    gap:  calc(10 * var(--ui-scale));
     padding: calc(2 * var(--ui-scale)) calc(10 * var(--ui-scale));
     width: 100%;
   }
@@ -62,12 +78,13 @@ function initChat() {
     -webkit-text-stroke: 1px white;
   }
   #chat > .message.you > .playerName {
-    color: #8543ff;
-    -webkit-text-stroke: 1px #8543ff;
+    color: var(--netcolor2);
+    -webkit-text-stroke: 1px var(--netcolor2);
   }
 
   #chat > .message > .text {
     text-wrap: wrap;
+    width: 100%;
   }
 
   `
@@ -115,8 +132,14 @@ function initChat() {
   chatInputEl.addEventListener("blur", ()=>{
     isChatOpen = false
   })
+  chatInputEl.addEventListener("focus", ()=>{
+    isChatOpen = true
+  })
 
   document.addEventListener("keydown", (event) => {
+    let isInGame = document.querySelector("#in-game-screen.active") != null
+
+    if (isChatOpen) event.stopPropagation()
     if (event.key == "Enter") {
       if (isChatOpen) {
         console.log("send")
@@ -132,10 +155,12 @@ function initChat() {
       }
     }
     if (event.which == 84) { // t key
-      if (!isChatOpen) {
+      if (!isChatOpen && isInGame) {
         isChatOpen = true
-        chatInputEl.focus()
         event.stopPropagation()
+        setTimeout(()=>{
+          chatInputEl.focus()
+        }, 0)
       }
       console.log("open chat")
     }
@@ -168,6 +193,7 @@ function initChat() {
     let newPlayerName = null
     const nameEl = document.querySelector("#spawn-nickname")
     if (nameEl) newPlayerName = nameEl.value
+    if (newPlayerName === "") newPlayerName = "Unnamed player"
 
     let newRegion = null
     const regionEl = document.querySelector("#home-screen > #server-selector > #region-selector > .selector > .selected")

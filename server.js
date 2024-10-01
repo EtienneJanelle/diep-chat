@@ -59,7 +59,7 @@ io.on('connection', socket => {
 
 function getUserRooms(socket) {
   return Object.entries(rooms).reduce((roomIds, [roomId, room]) => {
-    if (room.users[socket.id] != null) names.push(roomId)
+    if (room.users[socket.id] != null) roomIds.push(roomId)
     return roomIds
   }, [])
 }

@@ -1,5 +1,5 @@
 
-const io = require('socket.io')()
+const io = require('socket.io')(10000)
 
 const users = {}
 

@@ -1,0 +1,227 @@
+// ==UserScript==
+// @name         Diep Chat
+// @namespace    none
+// @version      1.0
+// @description  Press t to open chat
+// @author       Clever Yeti
+// @match        https://*diep.io/*
+// @grant        none
+// @run-at       document-idle
+// @require https://unpkg.com/socket.io@4.7.5/client-dist/socket.io.js
+
+// ==/UserScript==
+setTimeout(initChat, 5000)
+function initChat() {
+  console.log("initialising diep chat")
+
+  const messageDuration = 10
+  const chatSocket = io('http://localhost:3000')
+
+  const style = `
+  #chat {
+    --ui-scale: max(calc(var(--scale-height) / 1920.0), calc(var(--scale-width) / 1080));
+    font-size: calc(16 * var(--ui-scale));
+    position: fixed;
+    bottom: calc(200 * var(--ui-scale));
+    left: calc(30 * var(--ui-scale));
+    width: calc(300 * var(--ui-scale));
+    background: #00000044;
+    border-radius: calc(10 * var(--ui-scale));
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+    pointer-events: none;
+    touch-events: none;
+  }
+  #chat > .input {
+    display: block;
+    width: auto;
+    height: calc(20 * var(--ui-scale));
+    border-radius: calc(10 * var(--ui-scale));
+    padding-left: calc(10 * var(--ui-scale));
+    border: none;
+    background: var(--uicolor-3);
+    box-shadow: inset 0 0 0 calc(2 * var(--ui-scale)) rgba(0,0,0,0.25);
+    color: white;
+  }
+  #chat > .input:focus {
+    background: #333333;
+  }
+
+
+  #chat > .message {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    color: white;
+    gap: 10px;
+    padding: calc(2 * var(--ui-scale)) calc(10 * var(--ui-scale));
+    width: 100%;
+  }
+
+  #chat > .message > .playerName {
+    -webkit-text-stroke: 1px white;
+  }
+  #chat > .message.you > .playerName {
+    color: #8543ff;
+    -webkit-text-stroke: 1px #8543ff;
+  }
+
+  #chat > .message > .text {
+    text-wrap: wrap;
+  }
+
+  `
+
+  const regions = {
+      "atl": "Atlanta",
+      "lax": "Los Angeles",
+      "fra": "Frankfurt",
+      "osa": "Osaka",
+      "syd": "Sydney"
+  }
+  const gameModes = {
+      "ffa": "FFA",
+      "teams": "2TDM",
+      "4teams": "4TDM",
+      "event": "Event",
+      "maze": "Maze"
+  }
+
+  let rooms = {}
+  for (let [regionCode, regionName] of Object.entries(regions)) {
+      for (let [gameModeCode, gameModeName] of Object.entries(gameModes)) {
+          rooms[regionCode+"-"+gameModeCode] = {name: regionName+" " +gameModeName}
+      }
+  }
+
+  let isChatOpen = false
+  let isInRoom = false
+  let currentRoom = ""
+  let currentPlayerName = ""
+
+  let chatStyleEl = document.createElement("style")
+  chatStyleEl.innerHTML = style
+  document.body.appendChild(chatStyleEl)
+
+  let chatEl = document.createElement("div")
+  chatEl.id = "chat"
+  document.body.appendChild(chatEl)
+
+  let chatInputEl = document.createElement("input")
+  chatInputEl.classList.add("input")
+  chatInputEl.type = "text"
+  chatInputEl.placeholder = "Press T to chat"
+  chatEl.appendChild(chatInputEl)
+  chatInputEl.addEventListener("blur", ()=>{
+    isChatOpen = false
+  })
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key == "Enter") {
+      if (isChatOpen) {
+        console.log("send")
+        sendMessage(chatInputEl.value)
+        chatInputEl.value = ""
+        chatInputEl.blur()
+      }
+    }
+    if (event.key == "Escape") {
+      if (isChatOpen) {
+        event.stopPropagation()
+        chatInputEl.blur()
+      }
+    }
+    if (event.which == 84) { // t key
+      if (!isChatOpen) {
+        isChatOpen = true
+        chatInputEl.focus()
+        event.stopPropagation()
+      }
+      console.log("open chat")
+    }
+  })
+
+  function appendMessage(sender, message, isYou) {
+    const messageEl = document.createElement("div")
+    messageEl.classList.add("message")
+    if (isYou) messageEl.classList.add("you")
+
+    const playerNameEl = document.createElement("div")
+    playerNameEl.classList.add("playerName")
+    playerNameEl.innerText = sender
+    messageEl.appendChild(playerNameEl)
+    const textEl = document.createElement("div")
+    textEl.classList.add("text")
+    textEl.innerText = message
+    messageEl.appendChild(textEl)
+
+    chatEl.insertBefore(messageEl, chatInputEl)
+    setTimeout(()=>{
+      messageEl.remove()
+    }, messageDuration * 1000)
+  }
+
+  setInterval(refreshRoom, 1000)
+
+  function refreshRoom() { // when clicking play
+  
+    let newPlayerName = null
+    const nameEl = document.querySelector("#spawn-nickname")
+    if (nameEl) newPlayerName = nameEl.value
+
+    let newRegion = null
+    const regionEl = document.querySelector("#home-screen > #server-selector > #region-selector > .selector > .selected")
+    if (regionEl) newRegion = regionEl.getAttribute("value")
+
+    let newGameMode = null
+    const gameModeEl = document.querySelector("#home-screen > #server-selector > #gamemode-selector > .selector > .selected")
+    if (gameModeEl) newGameMode = gameModeEl.getAttribute("value")
+    
+    if (newPlayerName !== null && newRegion !== null && newGameMode !== null) {
+      const newRoom = newRegion + "-" + newGameMode
+      if (newRoom !== currentRoom || newPlayerName !== currentPlayerName) {
+        console.log("login change", newRoom, newPlayerName)
+        currentPlayerName = newPlayerName
+        updateConnection(newRoom)
+      }
+    }
+  }
+
+  function updateConnection(newRoom) {
+    console.log("connection update")
+    if (isInRoom) {
+      appendMessage("You left "+ rooms[currentRoom].name, "", true)
+      chatSocket.emit('send-user-disconnected', currentRoom, currentPlayerName)
+    }
+    if (rooms[newRoom] != undefined) {
+      isInRoom = true
+      console.log('new-user', newRoom, currentPlayerName)
+      appendMessage("You joined " + rooms[newRoom].name + " as " + currentPlayerName, "", true)
+      console.log(chatSocket.emit('new-user', newRoom, currentPlayerName))
+    } else {
+      isInRoom = false
+    }
+    currentRoom = newRoom
+  }
+
+
+  function sendMessage(message) {
+    appendMessage(currentPlayerName + ":", message, true)
+    chatSocket.emit('send-chat-message', currentRoom, message)
+  }
+
+  chatSocket.on('chat-message', data => {
+    appendMessage(data.name + ":", data.message, false)
+  })
+
+  chatSocket.on('user-connected', name => {
+    appendMessage(name + " joined the chat", "", false)
+  })
+
+  chatSocket.on('user-disconnected', name => {
+    appendMessage(name + " left the chat", "", false)
+  })
+}
+
+
+

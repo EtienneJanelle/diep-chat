@@ -137,7 +137,7 @@ function initChat() {
   })
 
   document.addEventListener("keydown", (event) => {
-    let isInGame = document.querySelector("#in-game-screen.active") != null
+    const isInGame = document.querySelector("#in-game-screen.active") != null
 
     if (isChatOpen) event.stopPropagation()
     if (event.key == "Enter") {
@@ -189,7 +189,9 @@ function initChat() {
   setInterval(refreshRoom, 1000)
 
   function refreshRoom() { // when clicking play
-  
+    const isInGame = document.querySelector("#in-game-screen.active") != null
+    if (!isInGame) return    
+    
     let newPlayerName = null
     const nameEl = document.querySelector("#spawn-nickname")
     if (nameEl) newPlayerName = nameEl.value

@@ -166,7 +166,7 @@ function initChat() {
     }
   })
 
-  function appendMessage(sender, message, isYou) {
+  function appendMessage(sender, message = "", isYou = false) {
     const messageEl = document.createElement("div")
     messageEl.classList.add("message")
     if (isYou) messageEl.classList.add("you")
@@ -215,17 +215,24 @@ function initChat() {
     }
   }
 
-  function updateConnection(newRoom) {
+  async function updateConnection(newRoom) {
     console.log("connection update")
     if (isInRoom) {
-      appendMessage("You left "+ rooms[currentRoom].name, "", true)
-      chatSocket.emit('send-user-disconnected', currentRoom, currentPlayerName)
+      const response1 = await chatSocket.emit('send-user-disconnected', currentRoom, currentPlayerName)
+      if (response1.connected) {
+        appendMessage("You left "+ rooms[currentRoom].name, "", true)
+      } else {
+        appendMessage("Failed to leave room")
+      }
     }
     if (rooms[newRoom] != undefined) {
       isInRoom = true
-      console.log('new-user', newRoom, currentPlayerName)
-      appendMessage("You joined " + rooms[newRoom].name + " as " + currentPlayerName, "", true)
-      console.log(chatSocket.emit('new-user', newRoom, currentPlayerName))
+      const response2 = await chatSocket.emit('new-user', newRoom, currentPlayerName)
+      if (response1.connected) {
+        appendMessage("You joined " + rooms[newRoom].name + " as " + currentPlayerName, "", true)
+      } else {
+        appendMessage("Failed to join room")
+      }
     } else {
       isInRoom = false
     }
@@ -233,9 +240,14 @@ function initChat() {
   }
 
 
-  function sendMessage(message) {
-    appendMessage(currentPlayerName + ":", message, true)
-    chatSocket.emit('send-chat-message', currentRoom, message)
+  async function sendMessage(message) {
+    
+    const response = await chatSocket.emit('send-chat-message', currentRoom, message)
+    if (response.connected) {
+      appendMessage(currentPlayerName + ":", message, true)
+    } else {
+      appendMessage("Failed sending message")
+    }
   }
 
   chatSocket.on('chat-message', data => {

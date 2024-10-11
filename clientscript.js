@@ -129,7 +129,7 @@ function initChat() {
   (async () => {
     const response = await (await fetch("https://raw.githubusercontent.com/CleverYeti/diepChat/refs/heads/main/version.json")).json()
     if (version != response.version) {
-      appendMessage("", "Your version of DiepChat (v" + version + ") is out of date, it may not work properly. you can download the new version (v" + response.version + ") from https://github.com/CleverYeti/diepchat")
+      appendMessage("", "Your version of DiepChat (v" + version + ") is out of date, it may not work properly. You can download the new version (v" + response.version + ") from https://github.com/CleverYeti/diepchat")
     }
   })()
   

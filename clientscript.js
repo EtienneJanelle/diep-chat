@@ -121,7 +121,7 @@ function initChat() {
   let currentPlayerCount = 0
   
   const maxAcceptableInterval = 30000
-  const connectionCheckInterval = 5000
+  const connectionCheckInterval = 10000
 
   const version = "1.1";
 
@@ -304,6 +304,7 @@ function initChat() {
   })
 
   setInterval(() => {
+    if (!isInRoom) return
     if (Date.now() - lastPlayerCountTime > maxAcceptableInterval) {
       appendMessage("", "No message from server in the last "+ Math.floor((Date.now() - lastPlayerCountTime)/1000) + " seconds, chat may have disconnected", false)
     }

@@ -123,13 +123,14 @@ function initChat() {
   const maxAcceptableInterval = 30000
   const connectionCheckInterval = 5000
 
-  const version = "1.1"
+  const version = "1.1";
 
   // check version
-  (async () => {
-    const response = await (await fetch("https://raw.githubusercontent.com/CleverYeti/diepChat/refs/heads/main/version.json")).json()
-    if (version != response.version) {
-      appendMessage("", "Your version of DiepChat (v" + version + ") is out of date, it may not work properly. You can download the new version (v" + response.version + ") from https://github.com/CleverYeti/diepchat")
+  (async function() {
+    const response = await fetch("https://raw.githubusercontent.com/CleverYeti/diepChat/refs/heads/main/version.json")
+    const json = await response.json()
+    if (version != json.version) {
+      appendMessage("", "Your version of DiepChat (v" + version + ") is out of date, it may not work properly. You can download the new version (v" + json.version + ") from https://github.com/CleverYeti/diepchat")
     }
   })()
   
@@ -292,7 +293,10 @@ function initChat() {
     appendMessage(name + " left the chat", "", false)
   })
 
-  chatSocket.on('connection-check', playerCount => {
+  chatSocket.on('connection-check', data => {
+    const playerCount = data.playerCount
+    console.log("playerCount", playerCount)
+    lastPlayerCountTime = Date.now()
     if (playerCount != currentPlayerCount) {
       currentPlayerCount = playerCount
       appendMessage("", playerCount + " players are in chat", false)
@@ -301,7 +305,7 @@ function initChat() {
 
   setInterval(() => {
     if (Date.now() - lastPlayerCountTime > maxAcceptableInterval) {
-      appendMessage("", "No mesage from server in the last "+ Math.floor((Date.now() - lastPlayerCountTime)/1000) + " seconds, chat may have disconnected", false)
+      appendMessage("", "No message from server in the last "+ Math.floor((Date.now() - lastPlayerCountTime)/1000) + " seconds, chat may have disconnected", false)
     }
   }, connectionCheckInterval)
 }

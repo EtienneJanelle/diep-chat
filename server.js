@@ -3,6 +3,8 @@ const io = require('socket.io')(10000)
 
 const users = {}
 
+const connectionCheckInterval = 15000
+
 const regions = {
   "atl": "Atlanta",
   "lax": "Los Angeles",
@@ -65,6 +67,12 @@ io.on('connection', socket => {
     console.log("user disconnect")
   })
 })
+
+setInterval(() => {
+  for (let room in rooms) {
+    io.to(room).broadcast.emit('connection-check', rooms[room].users.length())
+  }
+}, connectionCheckInterval)
 
 function getUserRooms(socket) {
   return Object.entries(rooms).reduce((roomIds, [roomId, room]) => {

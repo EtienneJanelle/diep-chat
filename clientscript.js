@@ -277,6 +277,7 @@ function initChat() {
     }
   }
 
+
   chatSocket.on('chat-message', data => {
     appendMessage(data.name + ":", data.message, false)
   })
@@ -294,7 +295,6 @@ function initChat() {
   })
 
   chatSocket.on('connection-check', data => {
-    const playerCount = data.playerCount
     console.log("playerCount", playerCount)
     lastPlayerCountTime = Date.now()
     if (playerCount != currentPlayerCount) {

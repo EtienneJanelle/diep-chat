@@ -294,7 +294,7 @@ function initChat() {
     appendMessage(name + " left the chat", "", false)
   })
 
-  chatSocket.on('connection-check', data => {
+  chatSocket.on('connection-check', playerCount => {
     console.log("playerCount", playerCount)
     lastPlayerCountTime = Date.now()
     if (playerCount != currentPlayerCount) {

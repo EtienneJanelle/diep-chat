@@ -89,46 +89,52 @@ function initChat() {
 
   `
 
+
+  
   const regions = {
-      "atl": "Atlanta",
-      "lax": "Los Angeles",
-      "fra": "Frankfurt",
-      "osa": "Osaka",
-      "syd": "Sydney"
+    "atl": "Atlanta",
+    "lax": "Los Angeles",
+    "fra": "Frankfurt",
+    "osa": "Osaka",
+    "syd": "Sydney"
   }
   const gameModes = {
-      "ffa": "FFA",
-      "teams": "2TDM",
-      "4teams": "4TDM",
-      "event": "Event",
-      "maze": "Maze"
+    "ffa": "FFA",
+    "teams": "2TDM",
+    "4teams": "4TDM",
+    "event": "Event",
+    "maze": "Maze"
   }
-
+  
   let rooms = {}
   for (let [regionCode, regionName] of Object.entries(regions)) {
-      for (let [gameModeCode, gameModeName] of Object.entries(gameModes)) {
-          rooms[regionCode+"-"+gameModeCode] = {name: regionName+" " +gameModeName}
-      }
+    for (let [gameModeCode, gameModeName] of Object.entries(gameModes)) {
+      rooms[regionCode+"-"+gameModeCode] = {name: regionName+" " +gameModeName}
+    }
   }
-
+  
   let isChatOpen = false
   let isInRoom = false
   let currentRoom = ""
   let currentPlayerName = ""
   let lastPlayerCountTime = Date.now()
   let currentPlayerCount = 0
-
+  
   const maxAcceptableInterval = 30000
   const connectionCheckInterval = 5000
+
+  // check version
+  
+  
 
   let chatStyleEl = document.createElement("style")
   chatStyleEl.innerHTML = style
   document.body.appendChild(chatStyleEl)
-
+  
   let chatEl = document.createElement("div")
   chatEl.id = "chat"
   document.body.appendChild(chatEl)
-
+  
   let chatInputEl = document.createElement("input")
   chatInputEl.classList.add("input")
   chatInputEl.type = "text"
@@ -140,14 +146,14 @@ function initChat() {
   chatInputEl.addEventListener("focus", ()=>{
     isChatOpen = true
   })
-
+  
   document.addEventListener("keydown", (event) => {
     const isInGame = document.querySelector("#in-game-screen.active") != null
     const isTypingName = document.querySelector("#spawn-nickname:focus") != null
-
+    
     if (isChatOpen) event.stopPropagation()
-    if (event.key == "Enter") {
-      if (isChatOpen) {
+      if (event.key == "Enter") {
+        if (isChatOpen) {
         console.log("send")
         sendMessage(chatInputEl.value)
         chatInputEl.value = ""

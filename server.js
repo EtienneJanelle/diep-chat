@@ -70,7 +70,7 @@ io.on('connection', socket => {
 
 setInterval(() => {
   for (let room in rooms) {
-    io.to(room).broadcast.emit('connection-check', rooms[room].users.length())
+    io.to(room).emit('connection-check', rooms[room].users.length())
   }
 }, connectionCheckInterval)
 

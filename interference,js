@@ -48,442 +48,417 @@ document.addEventListener('keydown', function(event) {
 
 var myTimeout = setTimeout(startt, 1000);
 function startt() {
-
-        var add = document.getElementById("last-updated")
-        var add_2 = document.getElementById("apes-io-promo");
-        add.style.display = "none";
-        add_2.style.display = "none";
-
-(function() {
-    'use strict';
-    var welcome_msg = document.createElement("h1");
-    var menuVisible = GM_getValue('menuVisible', true);
+    var add = document.getElementById("last-updated")
+    var add_2 = document.getElementById("apes-io-promo");
+    add.style.display = "none";
+    add_2.style.display = "none";
 
     (function() {
-        const hasRunBefore = GM_getValue('hasRunBefore', false);
-        if (!hasRunBefore) {
-            document.body.prepend(welcome_msg);
-            GM_setValue('hasRunBefore', true);
-        }
-    })();
-    var build_message = document.createElement("h1");
+        'use strict';
+        var welcome_msg = document.createElement("h1");
+        var menuVisible = GM_getValue('menuVisible', true);
 
-    function build_msg() {
-        build_message.style.display = 'block';
-        build_message.textContent = "Build";
-        build_message.style.zIndex = "9999";
-        build_message.style.width = "45vw";
-        build_message.style.height = "auto";
-        build_message.style.whiteSpace = "nowrap";
-        build_message.style.fontSize = "1em";
-        build_message.style.position = "absolute";
-        build_message.style.textAlign = "center";
-        build_message.style.top = "7%";
-        build_message.style.left = "50%";
-        build_message.style.transform = "translate(-50%, -50%)";
-        build_message.style.backgroundColor = "rgba(0, 109, 91, 0.8)";
-        build_message.style.color = "white";
-        build_message.style.padding = "0.5em";
-        build_message.style.borderRadius = "5px";
-
-        document.body.appendChild(build_message)
-    }
-
-    setTimeout(function() {
-        welcome_msg.textContent = "Script by Comma, press TAB to toggle menu, report any bugs via Discord";
-        welcome_msg.style.zIndex = "9999";
-        welcome_msg.style.width = "45vw";
-        welcome_msg.style.height = "auto";
-        welcome_msg.style.whiteSpace = "nowrap";
-        welcome_msg.style.fontSize = "1em";
-        welcome_msg.style.position = "absolute";
-        welcome_msg.style.textAlign = "center";
-        welcome_msg.style.top = "7%";
-        welcome_msg.style.left = "50%";
-        welcome_msg.style.transform = "translate(-50%, -50%)";
-        welcome_msg.style.backgroundColor = "rgba(0, 109, 91, 0.8)";
-        welcome_msg.style.color = "white";
-        welcome_msg.style.padding = "0.5em";
-        welcome_msg.style.borderRadius = "5px";
-
-        const tooltip = document.createElement('div')
-
-        tooltip.style.position = 'absolute';
-        tooltip.style.visibility = 'hidden';
-        tooltip.style.color = 'white';
-        tooltip.textContent = 'Test';
-        tooltip.style.fontSize = '1em';
-        tooltip.style.textAlign = 'center';
-        tooltip.style.transition = 'opacity 0.3s';
-        tooltip.style.backgroundColor = 'black';
-        tooltip.style.opacity = '0';
-        tooltip.style.zIndex = '9999';
-
-        setTimeout(function msg(){welcome_msg.style.display = "none"}, 5000);
-    }, 1000);
-
-
-    var Creator = document.createElement("div");
-    var Help = document.createElement("p");
-    var SSP_Ol = document.createElement("p");
-    var SSP_Fi = document.createElement("p");
-    var Glass_Fi = document.createElement("p");
-    var Destroyer = document.createElement("p");
-    var time_alive = document.createElement("p")
-    var Ui_Toggle = document.createElement("p");
-    var Net_Predict_Toggle = document.createElement("p");
-    var Build_Create = document.createElement("p");
-    var afkk = document.createElement("p");
-    Creator.innerHTML = "Diep Build<br>Comma#4169";
-    Help.textContent = "TAB Key: Toggle On/Off";
-    SSP_Ol.textContent = "SSP Overlord: 1";
-    SSP_Fi.textContent = "SSP Fighter: 2";
-    Glass_Fi.textContent = "Glass Fighter: 3";
-    Destroyer.textContent = "Destroyer: 4";
-    time_alive.textContent = "Time Alive - Disabled"
-    Ui_Toggle.textContent = "UI Toggle: F - Disabled";
-    Build_Create.textContent = "Build Create: B";
-    Net_Predict_Toggle.textContent = "Net_Predict: - Enabled";
-    afkk.textContent = "Press ` for afk"
-    Creator.style.display = "none";
-
-    function hi() {
-        if (!t) {
-            Creator.style.display = 'none';
-        } else {
-            Creator.style.display = 'block';
-        }
-        t = !t;
-    };
-    Help.onclick = hi;
-
-    var t__1 = true;
-    var renUI = true;
-    var renPREDICT = true;
-    Ui_Toggle.onclick = function() {
-        if(!t__1) {
-            Ui_Toggle.textContent = "UI Toggle: F - Disabled"
-            t__1 = !t__1
-        } else {
-            if(Ui_Toggle.textContent = "UI Toggle: F - Enabled") {
-                t__1 = !t__1
+        (function() {
+            const hasRunBefore = GM_getValue('hasRunBefore', false);
+            if (!hasRunBefore) {
+                document.body.prepend(welcome_msg);
+                GM_setValue('hasRunBefore', true);
             }
-        }
-    }
-    Net_Predict_Toggle.onclick = function() {
-        if(Net_Predict_Toggle.textContent === "Net_Predict: - Enabled") {
-            input.set_convar("net_predict_movement", false)
-            Net_Predict_Toggle.textContent = "Net_Predict: - Disabled"
-        } else {
-            if(Net_Predict_Toggle.textContent === "Net_Predict: - Disabled"){
-                input.set_convar("net_predict_movement", true)
-                Net_Predict_Toggle.textContent = "Net_Predict: - Enabled"
-            }
-        }
-    }
+        })();
 
-    SSP_Ol.onclick = function() {
-        input.execute('game_stats_build 565656565656568888888444444423233');
-        build_msg()
-        build_message.textContent = "SSP Overlord build applied";
-        setTimeout(function() {
-            build_message.style.display = "none";
-        }, 3000);
-    };
-
-    SSP_Fi.onclick = function() {
-        input.execute('game_stats_build 565656565656568888888777777723233');
-        build_msg()
-        build_message.textContent = "SSP Fighter build applied";
+        var build_message = document.createElement("h1");
+        function build_msg() {
+            build_message.style.display = 'block';
+            build_message.textContent = "Build";
+            build_message.style.zIndex = "9999";
+            build_message.style.width = "45vw";
+            build_message.style.height = "auto";
+            build_message.style.whiteSpace = "nowrap";
+            build_message.style.fontSize = "1em";
+            build_message.style.position = "absolute";
+            build_message.style.textAlign = "center";
+            build_message.style.top = "7%";
+            build_message.style.left = "50%";
+            build_message.style.transform = "translate(-50%, -50%)";
+            build_message.style.backgroundColor = "rgba(0, 109, 91, 0.8)";
+            build_message.style.color = "white";
+            build_message.style.padding = "0.5em";
+            build_message.style.borderRadius = "5px";
+            document.body.appendChild(build_message)
+        }
 
         setTimeout(function() {
-            build_message.style.display = "none";
-        }, 3000);
-};
-Glass_Fi.onclick = function() {
-input.execute('game_stats_build 56565656565656888888877777774444444');
+            welcome_msg.textContent = "Script by Comma, press TAB to toggle menu, report any bugs via Discord";
+            welcome_msg.style.zIndex = "9999";
+            welcome_msg.style.width = "45vw";
+            welcome_msg.style.height = "auto";
+            welcome_msg.style.whiteSpace = "nowrap";
+            welcome_msg.style.fontSize = "1em";
+            welcome_msg.style.position = "absolute";
+            welcome_msg.style.textAlign = "center";
+            welcome_msg.style.top = "7%";
+            welcome_msg.style.left = "50%";
+            welcome_msg.style.transform = "translate(-50%, -50%)";
+            welcome_msg.style.backgroundColor = "rgba(0, 109, 91, 0.8)";
+            welcome_msg.style.color = "white";
+            welcome_msg.style.padding = "0.5em";
+            welcome_msg.style.borderRadius = "5px";
 
-build_msg()
-build_message.textContent = "Glass Fighter build applied";
-setTimeout(function() {
-    build_message.style.display = "none";
-}, 3000);
+            const tooltip = document.createElement('div')
+            tooltip.style.position = 'absolute';
+            tooltip.style.visibility = 'hidden';
+            tooltip.style.color = 'white';
+            tooltip.textContent = 'Test';
+            tooltip.style.fontSize = '1em';
+            tooltip.style.textAlign = 'center';
+            tooltip.style.transition = 'opacity 0.3s';
+            tooltip.style.backgroundColor = 'black';
+            tooltip.style.opacity = '0';
+            tooltip.style.zIndex = '9999';
 
-};
-Destroyer.onclick = function() {
-input.execute('game_stats_build 565656565656888888844444447777777');
-build_msg()
-build_message.textContent = "Destroyer build applied";
-
-setTimeout(function() {
-    build_message.style.display = "none";
-}, 3000);
-};
-
-    Creator.style.position = "fixed";
-    Creator.style.top = "0px";
-    Creator.style.left = "0px";
-    Creator.style.zIndex = "9999";
-
-    Creator.style.backgroundColor = "rgba(0, 109, 91, 0.8)";
-    Creator.style.color = "white";
-    Creator.style.padding = "10px";
-    Creator.style.borderRadius = "5px";
+            setTimeout(function msg(){welcome_msg.style.display = "none"}, 5000);
+        }, 1000);
 
 
-    document.body.appendChild(Creator);
-    Creator.appendChild(Help);
-    Creator.appendChild(SSP_Ol);
-    Creator.appendChild(SSP_Fi);
-    Creator.appendChild(Glass_Fi);
-    Creator.appendChild(Destroyer);
-    Creator.appendChild(Ui_Toggle);
-    Creator.appendChild(Build_Create);
-    Creator.appendChild(Net_Predict_Toggle);
-    Creator.appendChild(time_alive)
-    Creator.appendChild(afkk)
-
-Creator.querySelectorAll('p').forEach(p => {
-
-        p.style.backgroundColor = 'rgba(0, 109, 91, 0.8)';
-        p.style.margin = "0";
-
-        p.style.padding = "5px";
-        p.style.borderRadius = "3px";
-        p.style.transition = "background-color 0.3s";
-
-let tooltip = document.getElementById('tooltip')
-        p.addEventListener('mouseover', (event) => {
-            event.target.style.backgroundColor = '#014D4E';
-           tooltip.style.visibility = "visible";
-            var mouse_coords_X = event.clientX;
-            var mouse_coords_y = event.clientY;
-            tooltip.style.opacity = '1'
-        });
-
-        p.addEventListener('mouseout', (event) => {
-            event.target.style.backgroundColor = 'rgba(0, 109, 91, 0.8)';
-            tooltip.style.visibility = "hidden"
-            tooltip.style.opacity = '0'
-        });
-    });
-
-    var t = true;
-    var t_2 = true;
-var t_8 = true;
-
-
-document.addEventListener('keydown', function(event) {
-  if (event.keyCode === 9) { // TAB key
-    if (!t) {
-       Creator.style.display = 'none';
-
-         } else {
-             Creator.style.display = 'block';
-     }
-  t = !t;
-  }
-    });
-
-
-
- (function() { // SSP Overlord
-  document.addEventListener('keydown', function(event) { //shift + 1
-if (event.shiftKey && event.keyCode === 49) {
-build_msg()
- build_message.textContent = "SSP Overlord build applied";
-          input.execute('game_stats_build 565656565656568888888444444423233');
-    setTimeout(function() {
-    build_message.style.display = "none";
-}, 3000);
-}
-        });
-    })();
-
-(function() { // SSP Fighter
-        document.addEventListener('keydown', function(event) { //Shift + 2
-            if (event.shiftKey && event.keyCode === 50) {
-                input.execute('game_stats_build 565656565656568888888777777723233');
-                build_msg()
-        build_message.textContent = "SSP Fighter build applied";
-                    setTimeout(function() {
-    build_message.style.display = "none";
-}, 3000);
-            }
-        });
-    })();
-
-    (function() { // Glass Fighter
-        document.addEventListener('keydown', function(event) { //shift + 3
-            if (event.shiftKey && event.keyCode === 51) {
-                input.execute('game_stats_build 56565656565656888888877777774444444');
-                 build_msg()
-            build_message.textContent = "Glass Fighter build applied";
-                    setTimeout(function() {
-    build_message.style.display = "none";
-}, 3000);
-            }
-        });
-    })();
-
-    (function() { // Destroyer
-        document.addEventListener('keydown', function(event) { //shift + 4
-            if (event.shiftKey && event.keyCode === 52) {
-                input.execute('game_stats_build 565656565656888888844444447777777');
-                build_msg()
-    build_message.textContent = "Destroyer build applied";
-                    setTimeout(function() {
-    build_message.style.display = "none";
-}, 3000);
-            }
-        });
-    })();
-
-    (function() { // UI Toggle
-
-
-     document.addEventListener('keydown', function(event) {
-        if (event.key === 'f' || event.key === 'F') {
-        if(Ui_Toggle.textContent === "UI Toggle: F - Enabled" && renUI == renUI) {
-
-                renUI = !renUI
-                input.set_convar("ren_ui", renUI);
-
-
-            }
-        }
-    });
-})();
-
-
-var clock = document.createElement("p");
-clock.style.position = "absolute";
-clock.style.display = "none";
-clock.style.right = "1.3%";
-clock.style.bottom = "23%";
-clock.style.color = "white";
-clock.style.fontSize = "1em";
-clock.style.zIndex = "9999";
-clock.style.fontFamily = "Ubuntu, sans-serif";
-clock.textContent = "00:00:00";
-document.body.appendChild(clock);
-
-var spawn_btn = document.getElementById("spawn-button");
-var timerInterval;
-var hours = 0;
-var minutes = 0;
-var seconds = 0;
-var isPaused = false;
-
-function pauseTimer() {
-    isPaused = true;
-}
-
-function resumeTimer() {
-    isPaused = false;
-}
-
-spawn_btn.onclick = function() {
-    clearInterval(timerInterval);
-clock.textContent = "00:00:00";
-        hours = 0;
-        minutes = 0;
-        seconds = 0;
-    if (isPaused) {
-        resumeTimer();
-    }
-
-    timerInterval = setInterval(function() {
-        if (!isPaused) {
-            seconds++;
-
-            if (seconds >= 60) {
-                seconds = 0;
-                minutes++;
-            }
-
-            if (minutes >= 60) {
-                minutes = 0;
-                hours++;
-            }
-
-            if (hours >= 24) {
-                hours = 0;
-            }
-
-            clock.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-        }
-    }, 1000);
-};
-
-function checkXState() {
-    var homeScreen = document.getElementById("home-screen");
-    if (homeScreen) {
-        var xState = homeScreen.getAttribute("x-state");
-        if (xState === "game-over") {
-            pauseTimer();
-        }
-    }
-}
-
-const observer = new MutationObserver(checkXState);
-var homeScreen = document.getElementById("home-screen");
-if (homeScreen) {
-    observer.observe(homeScreen, { attributes: true });
-}
-
-const bodyObserver = new MutationObserver(() => {
-    var newHomeScreen = document.getElementById("home-screen");
-    if (newHomeScreen) {
-        observer.observe(newHomeScreen, { attributes: true });
-        bodyObserver.disconnect();
-    }
-});
-
-bodyObserver.observe(document.body, { childList: true, subtree: true });
-
-
-time_alive.onclick = function() {
-    if (t_8) {
-
-        time_alive.textContent = "Time Alive - Enabled";
-        clock.style.display = "block";
-
-    } else {
-        time_alive.textContent = "Time Alive - Disabled";
-        clock.style.display = "none";
-
-    }
-    t_8 = !t_8
-};
-    (function() { // Build Create
-        document.addEventListener('keydown', function(event) {
-            if (event.keyCode === 66) {
-               var build_c = document.createElement("div")
-               var build_assistText = document.createElement("div")
-               var name = document.createElement("div")
-               var nameTutorial = document.createElement("div")
-
-               build_c.textContent = "Create build"
-                build_assistText.textContent = "Build your own build here<br> Press the number keys or the individual buttons to create your own build."
-                name.textContent = "Name"
-                nameTutorial.textContent = "Give your build a name"
-
-                document.body.appendChild(build_c)
-                document.body.appendChild(build_assistText)
-
-            }
-        });
-    })();
-
-document.addEventListener('keydown', function(event) {
-    if (event.keyCode === 192) {
+        var Creator = document.createElement("div");
+        var Help = document.createElement("p");
+        var SSP_Ol = document.createElement("p");
+        var SSP_Fi = document.createElement("p");
+        var Glass_Fi = document.createElement("p");
+        var Destroyer = document.createElement("p");
+        var time_alive = document.createElement("p")
+        var Ui_Toggle = document.createElement("p");
+        var Net_Predict_Toggle = document.createElement("p");
+        var Build_Create = document.createElement("p");
+        var afkk = document.createElement("p");
+        Creator.innerHTML = "Diep Build<br>Comma#4169";
+        Help.textContent = "TAB Key: Toggle On/Off";
+        SSP_Ol.textContent = "SSP Overlord: 1";
+        SSP_Fi.textContent = "SSP Fighter: 2";
+        Glass_Fi.textContent = "Glass Fighter: 3";
+        Destroyer.textContent = "Destroyer: 4";
+        time_alive.textContent = "Time Alive - Disabled"
+        Ui_Toggle.textContent = "UI Toggle: F - Disabled";
+        Build_Create.textContent = "Build Create: B";
+        Net_Predict_Toggle.textContent = "Net_Predict: - Enabled";
+        afkk.textContent = "Press ` for afk"
         Creator.style.display = "none";
-        t = true
-        }
-    });
 
-})();
+        function hi() {
+            if (!t) {
+                Creator.style.display = 'none';
+            } else {
+                Creator.style.display = 'block';
+            }
+            t = !t;
+        };
+        Help.onclick = hi;
+
+        var t__1 = true;
+        var renUI = true;
+        var renPREDICT = true;
+
+        Ui_Toggle.onclick = function() {
+            if(!t__1) {
+                Ui_Toggle.textContent = "UI Toggle: F - Disabled"
+                t__1 = !t__1
+            } else {
+                if(Ui_Toggle.textContent = "UI Toggle: F - Enabled") {
+                    t__1 = !t__1
+                }
+            }
+        }
+
+        Net_Predict_Toggle.onclick = function() {
+            if(Net_Predict_Toggle.textContent === "Net_Predict: - Enabled") {
+                input.set_convar("net_predict_movement", false)
+                Net_Predict_Toggle.textContent = "Net_Predict: - Disabled"
+            } else {
+                if(Net_Predict_Toggle.textContent === "Net_Predict: - Disabled"){
+                    input.set_convar("net_predict_movement", true)
+                    Net_Predict_Toggle.textContent = "Net_Predict: - Enabled"
+                }
+            }
+        }
+
+        SSP_Ol.onclick = function() {
+            input.execute('game_stats_build 565656565656568888888444444423233');
+            build_msg()
+            build_message.textContent = "SSP Overlord build applied";
+            setTimeout(function() {
+                build_message.style.display = "none";
+            }, 3000);
+        };
+
+        SSP_Fi.onclick = function() {
+            input.execute('game_stats_build 565656565656568888888777777723233');
+            build_msg()
+            build_message.textContent = "SSP Fighter build applied";
+            setTimeout(function() {
+                build_message.style.display = "none";
+            }, 3000);
+        };
+
+        Glass_Fi.onclick = function() {
+            input.execute('game_stats_build 56565656565656888888877777774444444');
+            build_msg()
+            build_message.textContent = "Glass Fighter build applied";
+            setTimeout(function() {
+                build_message.style.display = "none";
+            }, 3000);
+        };
+
+        Destroyer.onclick = function() {
+            input.execute('game_stats_build 565656565656888888844444447777777');
+            build_msg()
+            build_message.textContent = "Destroyer build applied";
+            setTimeout(function() {
+                build_message.style.display = "none";
+            }, 3000);
+        };
+
+        Creator.style.position = "fixed";
+        Creator.style.top = "0px";
+        Creator.style.left = "0px";
+        Creator.style.zIndex = "9999";
+        Creator.style.backgroundColor = "rgba(0, 109, 91, 0.8)";
+        Creator.style.color = "white";
+        Creator.style.padding = "10px";
+        Creator.style.borderRadius = "5px";
+
+
+        document.body.appendChild(Creator);
+        Creator.appendChild(Help);
+        Creator.appendChild(SSP_Ol);
+        Creator.appendChild(SSP_Fi);
+        Creator.appendChild(Glass_Fi);
+        Creator.appendChild(Destroyer);
+        Creator.appendChild(Ui_Toggle);
+        Creator.appendChild(Build_Create);
+        Creator.appendChild(Net_Predict_Toggle);
+        Creator.appendChild(time_alive)
+        Creator.appendChild(afkk)
+
+        Creator.querySelectorAll('p').forEach(p => {
+            p.style.backgroundColor = 'rgba(0, 109, 91, 0.8)';
+            p.style.margin = "0";
+            p.style.padding = "5px";
+            p.style.borderRadius = "3px";
+            p.style.transition = "background-color 0.3s";
+
+            let tooltip = document.getElementById('tooltip')
+            p.addEventListener('mouseover', (event) => {
+                event.target.style.backgroundColor = '#014D4E';
+                tooltip.style.visibility = "visible";
+                var mouse_coords_X = event.clientX;
+                var mouse_coords_y = event.clientY;
+                tooltip.style.opacity = '1'
+            });
+            p.addEventListener('mouseout', (event) => {
+                event.target.style.backgroundColor = 'rgba(0, 109, 91, 0.8)';
+                tooltip.style.visibility = "hidden"
+                tooltip.style.opacity = '0'
+            });
+        });
+
+        var t = true;
+        var t_2 = true;
+        var t_8 = true;
+        document.addEventListener('keydown', function(event) {
+            if (event.keyCode === 9) { // TAB key
+                if (!t) {
+                    Creator.style.display = 'none';
+                } else {
+                    Creator.style.display = 'block';
+                }
+            t = !t;
+            }
+        });
+
+
+
+        (function() { // SSP Overlord
+            document.addEventListener('keydown', function(event) { //shift + 1
+                if (event.shiftKey && event.keyCode === 49) {
+                    build_msg()
+                    build_message.textContent = "SSP Overlord build applied";
+                    input.execute('game_stats_build 565656565656568888888444444423233');
+                    setTimeout(function() {
+                        build_message.style.display = "none";
+                    }, 3000);
+                }
+            });
+        })();
+
+        (function() { // SSP Fighter
+            document.addEventListener('keydown', function(event) { //Shift + 2
+                if (event.shiftKey && event.keyCode === 50) {
+                    input.execute('game_stats_build 565656565656568888888777777723233');
+                    build_msg()
+                    build_message.textContent = "SSP Fighter build applied";
+                    setTimeout(function() {
+                        build_message.style.display = "none";
+                    }, 3000);
+                }
+            });
+        })();
+
+        (function() { // Glass Fighter
+            document.addEventListener('keydown', function(event) { //shift + 3
+                if (event.shiftKey && event.keyCode === 51) {
+                    input.execute('game_stats_build 56565656565656888888877777774444444');
+                    build_msg()
+                    build_message.textContent = "Glass Fighter build applied";
+                    setTimeout(function() {
+                        build_message.style.display = "none";
+                    }, 3000);
+                }
+            });
+        })();
+
+        (function() { // Destroyer
+            document.addEventListener('keydown', function(event) { //shift + 4
+                if (event.shiftKey && event.keyCode === 52) {
+                    input.execute('game_stats_build 565656565656888888844444447777777');
+                    build_msg()
+                    build_message.textContent = "Destroyer build applied";
+                    setTimeout(function() {
+                        build_message.style.display = "none";
+                    }, 3000);
+                }
+            });
+        })();
+
+        (function() { // UI Toggle
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'f' || event.key === 'F') {
+                    if(Ui_Toggle.textContent === "UI Toggle: F - Enabled" && renUI == renUI) {
+                        renUI = !renUI
+                        input.set_convar("ren_ui", renUI);
+                    }
+                }
+            });
+        })();
+
+
+        var clock = document.createElement("p");
+        clock.style.position = "absolute";
+        clock.style.display = "none";
+        clock.style.right = "1.3%";
+        clock.style.bottom = "23%";
+        clock.style.color = "white";
+        clock.style.fontSize = "1em";
+        clock.style.zIndex = "9999";
+        clock.style.fontFamily = "Ubuntu, sans-serif";
+        clock.textContent = "00:00:00";
+        document.body.appendChild(clock);
+
+        var spawn_btn = document.getElementById("spawn-button");
+        var timerInterval;
+        var hours = 0;
+        var minutes = 0;
+        var seconds = 0;
+        var isPaused = false;
+
+        function pauseTimer() {
+            isPaused = true;
+        }
+
+        function resumeTimer() {
+            isPaused = false;
+        }
+
+        spawn_btn.onclick = function() {
+            clearInterval(timerInterval);
+            clock.textContent = "00:00:00";
+            hours = 0;
+            minutes = 0;
+            seconds = 0;
+            if (isPaused) {
+                resumeTimer();
+            }
+
+            timerInterval = setInterval(function() {
+                if (!isPaused) {
+                    seconds++;
+                    if (seconds >= 60) {
+                        seconds = 0;
+                        minutes++;
+                    }
+                    if (minutes >= 60) {
+                        minutes = 0;
+                        hours++;
+                    }
+                    if (hours >= 24) {
+                        hours = 0;
+                    }
+                    clock.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                }
+            }, 1000);
+        };
+
+        function checkXState() {
+            var homeScreen = document.getElementById("home-screen");
+            if (homeScreen) {
+                var xState = homeScreen.getAttribute("x-state");
+                if (xState === "game-over") {
+                    pauseTimer();
+                }
+            }
+        }
+
+        const observer = new MutationObserver(checkXState);
+        var homeScreen = document.getElementById("home-screen");
+        if (homeScreen) {
+            observer.observe(homeScreen, { attributes: true });
+        }
+
+        const bodyObserver = new MutationObserver(() => {
+            var newHomeScreen = document.getElementById("home-screen");
+            if (newHomeScreen) {
+                observer.observe(newHomeScreen, { attributes: true });
+                bodyObserver.disconnect();
+            }
+        });
+        bodyObserver.observe(document.body, { childList: true, subtree: true });
+
+
+        time_alive.onclick = function() {
+            if (t_8) {
+                time_alive.textContent = "Time Alive - Enabled";
+                clock.style.display = "block";
+            } else {
+                time_alive.textContent = "Time Alive - Disabled";
+                clock.style.display = "none";
+            }
+            t_8 = !t_8
+        };
+        (function() { // Build Create
+            document.addEventListener('keydown', function(event) {
+                if (event.keyCode === 66) {
+                    var build_c = document.createElement("div")
+                    var build_assistText = document.createElement("div")
+                    var name = document.createElement("div")
+                    var nameTutorial = document.createElement("div")
+
+                    build_c.textContent = "Create build"
+                    build_assistText.textContent = "Build your own build here<br> Press the number keys or the individual buttons to create your own build."
+                    name.textContent = "Name"
+                    nameTutorial.textContent = "Give your build a name"
+
+                    document.body.appendChild(build_c)
+                    document.body.appendChild(build_assistText)
+                }
+            });
+        })();
+
+        document.addEventListener('keydown', function(event) {
+            if (event.keyCode === 192) {
+                Creator.style.display = "none";
+                t = true
+            }
+        });
+    })();
 }
 
 (function() {

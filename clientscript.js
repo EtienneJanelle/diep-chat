@@ -122,6 +122,7 @@ function initChat() {
   
   const maxAcceptableInterval = 30000
   const connectionCheckInterval = 10000
+  const keepAliveInterval = 15000
 
   const version = "1.5";
 
@@ -335,4 +336,8 @@ function initChat() {
       reconnect()
     }
   }, connectionCheckInterval)
+
+  chatSocket(() => {
+    socket.volatile.emit("send-keep-alive", Math.random());
+  }, keepAliveInterval)
 }

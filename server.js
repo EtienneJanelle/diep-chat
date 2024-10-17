@@ -59,6 +59,9 @@ io.on('connection', socket => {
     socket.to(room).broadcast.emit('chat-message', { message: message, name: rooms[room].users[socket.id]})
     console.log("msg", room + " - " + rooms[room].users[socket.id] + ": " + message)
   })
+  socket.on('send-keep-alive', (randomVal) => {
+    // absolutely nothing
+  })
   socket.on('disconnect', () => {
     getUserRooms(socket).forEach(room => {
       socket.to(room).broadcast.emit('user-disconnected', rooms[room].users[socket.id])

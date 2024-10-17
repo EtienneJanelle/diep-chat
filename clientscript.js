@@ -18,8 +18,6 @@ setTimeout(()=>{
   addScript("https://raw.githubusercontent.com/CleverYeti/diepChat/refs/heads/main/socket.io.js")
 },2000)
 
-
-
 setTimeout(initChat, 5000)
 function initChat() {
   console.log("initialising diep chat")
@@ -119,11 +117,13 @@ function initChat() {
   let currentPlayerName = ""
   let lastPlayerCountTime = Date.now()
   let currentPlayerCount = 0
+  let isConnected = true
+  let isReconnecting = false
   
   const maxAcceptableInterval = 30000
   const connectionCheckInterval = 10000
 
-  const version = "1.1";
+  const version = "1.5";
 
   // check version
   (async function() {
@@ -207,7 +207,8 @@ function initChat() {
 
   setInterval(refreshRoom, 1000)
 
-  function refreshRoom() { // when clicking play
+  function refreshRoom() {
+    if (!isConnected) return
     const isInGame = document.querySelector("#in-game-screen.active") != null
     if (!isInGame) return    
     
@@ -236,6 +237,7 @@ function initChat() {
 
   async function updateConnection(newRoom) {
     console.log("connection update")
+    lastPlayerCountTime = Date.now()
     if (isInRoom) {
       const room = currentRoom
       const response1 = await chatSocket.emit('send-user-disconnected', room, currentPlayerName)
@@ -254,6 +256,8 @@ function initChat() {
         appendMessage("You joined " + rooms[room].name + " as " + name, "", true)
       } else {
         appendMessage("Failed to join room")
+        appendMessage("The chat server is probably starting up (wait 2m)")
+        appendMessage("Type /reconnect to retry")
       }
     } else {
       isInRoom = false
@@ -261,8 +265,29 @@ function initChat() {
     currentRoom = newRoom
   }
 
+  async function reconnect() {
+    if (isReconnecting) return
+    isReconnecting = true
+    isConnected = false
+    isInRoom = false
+    currentRoom = ""
+    await chatSocket.disconnect()
+    await new Promise(resolve => setTimeout(resolve, 500));
+    await chatSocket.connect()
+    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    
+    lastPlayerCountTime = Date.now()
+    isConnected = true
+    isReconnecting = false
+  }
 
   async function sendMessage(message) {
+    if (message == "/reconnect") {
+      appendMessage("reconnecting")
+      reconnect()
+      return
+    }
     if (!isInRoom) {
       appendMessage("Cannot send message - no room connected")
       return
@@ -299,14 +324,15 @@ function initChat() {
     lastPlayerCountTime = Date.now()
     if (playerCount != currentPlayerCount) {
       currentPlayerCount = playerCount
-      appendMessage("", playerCount + " players are in chat", false)
+      appendMessage("", (playerCount - 1) + " other players are in chat", false)
     }
   })
 
   setInterval(() => {
     if (!isInRoom) return
     if (Date.now() - lastPlayerCountTime > maxAcceptableInterval) {
-      appendMessage("", "No message from server in the last "+ Math.floor((Date.now() - lastPlayerCountTime)/1000) + " seconds, chat may have disconnected", false)
+      appendMessage("", "No connection to chat server, reconnecting", false)
+      reconnect()
     }
   }, connectionCheckInterval)
 }

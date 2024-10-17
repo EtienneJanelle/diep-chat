@@ -124,7 +124,7 @@ function initChat() {
   const connectionCheckInterval = 10000
   const keepAliveInterval = 15000
 
-  const version = "1.5";
+  const version = "1.6";
 
   // check version
   (async function() {
@@ -337,7 +337,7 @@ function initChat() {
     }
   }, connectionCheckInterval)
 
-  chatSocket(() => {
-    socket.volatile.emit("send-keep-alive", Math.random());
+  setInterval(() => {
+    chatSocket.volatile.emit("send-keep-alive", Math.random());
   }, keepAliveInterval)
 }
